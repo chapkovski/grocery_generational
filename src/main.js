@@ -1,5 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
+import './assets/layout.css'
+import './assets/header.css'
+import './assets/nav.css'
+import './assets/demos.css'
+import './assets/form.css'
 
 Vue.config.productionTip = false
 
