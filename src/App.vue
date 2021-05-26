@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-   
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark height="100">
+      <div class="d-flex flex-column">
+        <div>
+          From the groceries on the screen, pick and drag some to go in the cart today
+          for a family of three with a baby and a busy lifestyle that add up to
+          between $6 and $8.
+        </div>
+        <div>
+          Total amount selected:
+          <v-chip  color="red"
+      text-color="white">${{ total }}</v-chip>
+        </div>
+      </div>
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-main>
+      <HelloWorld @update-total="updateTotal" />
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
+  name: "App",
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  components: {
+    HelloWorld,
+  },
+
+  data: () => ({
+    total: 0,
+  }),
+  methods: {
+    updateTotal(e) {
+      console.log('JOPAS!')
+      this.total = e;
+    },
+  },
+};
+</script>

@@ -5,9 +5,11 @@ import './assets/header.css'
 import './assets/nav.css'
 import './assets/demos.css'
 import './assets/form.css'
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')
