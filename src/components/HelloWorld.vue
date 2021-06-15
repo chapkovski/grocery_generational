@@ -8,7 +8,7 @@
           id="first"
           data-source="juju"
           :list="list"
-          class='d-flex flex-wrap'
+          class='d-flex flex-wrap border'
           draggable=".item"
           group="a"
         >
@@ -38,15 +38,16 @@
         <h3>Shopping card</h3>
 
         <draggable
-          :list="list2"
+          :list="shoppingCart"
           class='d-flex flex-wrap border'
           draggable=".item"
           group="a"
         >
+        <div v-if="isShoppingCartEmpty">JOPA</div>
           <div
             outlined
             class="item pa-1"
-            v-for="element in list2"
+            v-for="element in shoppingCart"
             :key="element.name"
           >
             <single-item
@@ -107,13 +108,19 @@ export default {
             "https://www.misterproduce.com/wp-content/uploads/2018/10/banana.jpg",
         },
       ],
-      list2: [
-        // { name: "Jonny 4", id: 3 }, { name: "Guisepe 5", id: 4 }
+      shoppingCart: [
+        
       ],
     };
   },
+  computed:{
+    isShoppingCartEmpty(){
+      console.debug("JOPA", _.empty([]))
+      return true
+    }
+  },
   watch: {
-    list2(v) {
+    shoppingCart(v) {
       
       
       this.$emit("update-total", _.sumBy(v, 'price'));
@@ -121,23 +128,15 @@ export default {
   },
 
   methods: {
-    add: function () {
-      this.list.push({ name: "Juan " + id, id: id++ });
-    },
-    replace: function () {
-      this.list = [{ name: "Edgard", id: id++ }];
-    },
-    add2: function () {
-      this.list2.push({ name: "Juan " + id, id: id++ });
-    },
-    replace2: function () {
-      this.list2 = [{ name: "Edgard", id: id++ }];
-    },
+     
+     
+     
   },
 };
 </script>
 <style scoped>
-.border{border: 1px solid black;
+.border{border: 1px solid lightgray;
+border-radius: 10px;
   min-height: 100px;}
 
 </style>
