@@ -6,8 +6,8 @@
 
         <draggable
           id="first"
-          data-source="juju"
-          :list="list"
+         
+           v-model='list'
           class='d-flex flex-wrap border'
           draggable=".item"
           group="a"
@@ -38,13 +38,14 @@
         <h3>Shopping card</h3>
 
         <draggable
-          :list="shoppingCart"
-          class='d-flex flex-wrap border'
+          v-model='shoppingCart'
+          class='d-flex flex-wrap border justify-center'
           draggable=".item"
           group="a"
         >
-        <div v-if="isShoppingCartEmpty">JOPA</div>
+
           <div
+            v-if='!isShoppingCartEmpty'
             outlined
             class="item pa-1"
             v-for="element in shoppingCart"
@@ -57,7 +58,7 @@
               :description="element.description"
             />
           </div>
-
+      <div v-if='isShoppingCartEmpty' class="align-self-center">Shopping cart is empty</div>
           
         </draggable>
       </v-col>

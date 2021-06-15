@@ -38,7 +38,7 @@ export default {
   }),
   methods: {
     updateTotal(e) {
-      console.log('JOPAS!')
+      
       this.total = e;
     },
   },
