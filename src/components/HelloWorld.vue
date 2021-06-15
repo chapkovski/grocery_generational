@@ -19,6 +19,8 @@
           >
             <single-item
                v-bind='element'
+               actionImg='mdi-plus'
+               @itemClicked='itemAdd(element.itemId)'
             />
           </div>
 
@@ -48,6 +50,8 @@
           >
             <single-item
               v-bind='element'
+                actionImg='mdi-minus'
+                @itemClicked='itemRemove(element.itemId)'
             />
           </div>
           <div v-if="isShoppingCartEmpty" class="align-self-center">
@@ -62,7 +66,7 @@
 <script>
 import _ from "lodash";
 import axios from "axios";
-
+import { v4 as uuidv4 } from 'uuid';
 import draggable from "vuedraggable";
 import SingleItem from "./SingleItem";
 let id = 1;
@@ -101,6 +105,7 @@ export default {
       const rand = _.sample(r.data);
       console.debug(rand);
       const rObj = {
+        itemId:uuidv4(),
         price: rand.Price,
         img: rand["Image URL"],
         name: rand["Item Name"],
@@ -112,7 +117,16 @@ export default {
       that.list.push(rObj);
     });
   },
-  methods: {},
+  methods: {
+    itemAdd(itemId){
+      const rem = _.remove(this.list, (i)=>{return i.itemId===itemId})
+      this.shoppingCart.push(...rem)
+      },
+    itemRemove(itemId){
+       const rem = _.remove(this.shoppingCart, (i)=>{return i.itemId===itemId})
+      this.list.push(...rem)
+    }
+  },
 };
 </script>
 <style scoped>
