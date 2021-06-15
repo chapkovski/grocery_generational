@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto my-3 border pa-3" max-width="200">
+  <v-card class=" ma-1 border" max-width="150">
     <v-img class="white--text yellow align-end" height="100px" :src="img">
     </v-img>
     <v-card-title>{{ title }}</v-card-title>

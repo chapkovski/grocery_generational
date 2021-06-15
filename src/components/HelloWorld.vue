@@ -8,13 +8,13 @@
           id="first"
           data-source="juju"
           :list="list"
-          class="list-group"
+          class='d-flex flex-wrap'
           draggable=".item"
           group="a"
         >
-          <v-sheet
+          <div
             outlined
-            class="list-group-item item"
+            class=" item"
             v-for="element in list"
             :key="element.name"
           >
@@ -24,7 +24,7 @@
               :title="element.title"
               :description="element.description"
             />
-          </v-sheet>
+          </div>
 
           <div
             slot="header"
@@ -39,13 +39,13 @@
 
         <draggable
           :list="list2"
-          class="list-group border"
+          class='d-flex flex-wrap border'
           draggable=".item"
           group="a"
         >
-          <v-sheet
+          <div
             outlined
-            class="list-group-item item pa-3"
+            class="item pa-1"
             v-for="element in list2"
             :key="element.name"
           >
@@ -55,14 +55,9 @@
               :title="element.title"
               :description="element.description"
             />
-          </v-sheet>
+          </div>
 
-          <div
-            slot="header"
-            class="btn-group list-group-item"
-            role="group"
-            aria-label="Basic example"
-          ></div>
+          
         </draggable>
       </v-col>
     </v-row>
@@ -142,8 +137,7 @@ export default {
 };
 </script>
 <style scoped>
-.list-group {
-  border: 1px solid black;
-  min-height: 100px;
-}
+.border{border: 1px solid black;
+  min-height: 100px;}
+
 </style>
