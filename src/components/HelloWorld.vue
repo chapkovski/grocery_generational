@@ -115,8 +115,7 @@ export default {
   },
   computed:{
     isShoppingCartEmpty(){
-      console.debug("JOPA", _.empty([]))
-      return true
+      return _.isEmpty(this.shoppingCart)
     }
   },
   watch: {
