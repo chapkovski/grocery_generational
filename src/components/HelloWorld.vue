@@ -6,15 +6,14 @@
 
         <draggable
           id="first"
-         
-           v-model='list'
-          class='d-flex flex-wrap border'
+          v-model="list"
+          class="d-flex flex-wrap border"
           draggable=".item"
           group="a"
         >
           <div
             outlined
-            class=" item"
+            class="item"
             v-for="element in list"
             :key="element.name"
           >
@@ -38,14 +37,13 @@
         <h3>Shopping card</h3>
 
         <draggable
-          v-model='shoppingCart'
-          class='d-flex flex-wrap border justify-center'
+          v-model="shoppingCart"
+          class="d-flex flex-wrap border justify-center"
           draggable=".item"
           group="a"
         >
-
           <div
-            v-if='!isShoppingCartEmpty'
+            v-if="!isShoppingCartEmpty"
             outlined
             class="item pa-1"
             v-for="element in shoppingCart"
@@ -58,8 +56,9 @@
               :description="element.description"
             />
           </div>
-      <div v-if='isShoppingCartEmpty' class="align-self-center">Shopping cart is empty</div>
-          
+          <div v-if="isShoppingCartEmpty" class="align-self-center">
+            Shopping cart is empty
+          </div>
         </draggable>
       </v-col>
     </v-row>
@@ -67,7 +66,9 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import _ from "lodash";
+import axios from "axios";
+
 import draggable from "vuedraggable";
 import SingleItem from "./SingleItem";
 let id = 1;
@@ -81,62 +82,47 @@ export default {
   },
   data() {
     return {
+      numItemsToChoose: 10,
       list: [
-        {
-          name: "fish",
-          id: 0,
-          price: 8.0,
-          title: "Fish",
-          description: "Fresh salmon",
-          img:
-            "https://thumbs.dreamstime.com/z/fresh-raw-salmon-red-fish-steak-isolated-white-background-64128737.jpg",
-        },
-        {
-          name: "meat",
-          id: 1,
-          price: 15.0,
-          title: "Meat",
-          description: "Steak",
-          img: "https://images.megapixl.com/233/2338892.jpg",
-        },
-        {
-          name: "banana",
-          id: 2,
-          price: 2.0,
-          title: "Banana",
-          description: "Fresh banana",
-          img:
-            "https://www.misterproduce.com/wp-content/uploads/2018/10/banana.jpg",
-        },
+      
       ],
-      shoppingCart: [
-        
-      ],
+      shoppingCart: [],
     };
   },
-  computed:{
-    isShoppingCartEmpty(){
-      return _.isEmpty(this.shoppingCart)
-    }
+  computed: {
+    isShoppingCartEmpty() {
+      return _.isEmpty(this.shoppingCart);
+    },
   },
   watch: {
     shoppingCart(v) {
-      
-      
-      this.$emit("update-total", _.sumBy(v, 'price'));
+      this.$emit("update-total", _.sumBy(v, "price"));
     },
   },
-
-  methods: {
-     
-     
-     
+  async mounted() {
+    const r = await axios.get("https://api.npoint.io/e9fdc3cd4bf2bffbd74a");
+    const toAdd = _.range(this.numItemsToChoose);
+    const that=this;
+    _.forEach(toAdd, function (i) {
+      const rand = _.sample(r.data);
+      console.debug(rand);
+      const rObj = {
+        price: rand.Price,
+        img: rand["Image URL"],
+        name: rand["Item Name"],
+        title: rand["Item Name"],
+        id: i,
+      };
+      that.list.push(rObj);
+    });
   },
+  methods: {},
 };
 </script>
 <style scoped>
-.border{border: 1px solid lightgray;
-border-radius: 10px;
-  min-height: 100px;}
-
+.border {
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  min-height: 100px;
+}
 </style>

@@ -1,8 +1,8 @@
 <template>
   <v-card class=" ma-1 border" max-width="150">
-    <v-img class="white--text yellow align-end" height="100px" :src="img">
+    <v-img class="white--text yellow align-end mx-1" height="100px" :src="img">
     </v-img>
-    <v-card-title>{{ title }}</v-card-title>
+    <h6 class='mx-1'>{{ title }}</h6>
     
 
     <v-card-text class="text--primary">
