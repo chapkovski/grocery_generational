@@ -7,6 +7,7 @@ import './assets/nav.css'
 import './assets/demos.css'
 import './assets/form.css'
 import vuetify from './plugins/vuetify'
+import 'animate.css'
 
 Vue.config.productionTip = false
 

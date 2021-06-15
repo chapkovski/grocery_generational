@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="6">
         <h3>Choices:</h3>
@@ -18,10 +18,7 @@
             :key="element.name"
           >
             <single-item
-              :img="element.img"
-              :price="element.price"
-              :title="element.title"
-              :description="element.description"
+               v-bind='element'
             />
           </div>
 
@@ -50,10 +47,7 @@
             :key="element.name"
           >
             <single-item
-              :img="element.img"
-              :price="element.price"
-              :title="element.title"
-              :description="element.description"
+              v-bind='element'
             />
           </div>
           <div v-if="isShoppingCartEmpty" class="align-self-center">
@@ -111,6 +105,8 @@ export default {
         img: rand["Image URL"],
         name: rand["Item Name"],
         title: rand["Item Name"],
+        ounces: rand["Ounces"],
+        quantity: rand["Quantity in Bundle"],
         id: i,
       };
       that.list.push(rObj);
