@@ -33,7 +33,7 @@
         </draggable>
       </v-col>
       <v-col cols="6">
-        <h3>Shopping card</h3>
+        <h3>Shopping cart</h3>
 
         <draggable
           v-model="shoppingCart"
@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      numItemsToChoose: 10,
+      numItemsToChoose: 1,
       list: [
       
       ],
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     isShoppingCartEmpty() {
-      return _.isEmpty(this.shoppingCart);
+      return this.shoppingCart.length ===0;
     },
   },
   watch: {
@@ -98,24 +98,25 @@ export default {
     },
   },
   async mounted() {
-    const r = await axios.get("https://api.npoint.io/e9fdc3cd4bf2bffbd74a");
+    
+    const qs =this.$route.query
+
+    const r = await axios.get("https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/random",{params:qs});
     const toAdd = _.range(this.numItemsToChoose);
-    const that=this;
-    _.forEach(toAdd, function (i) {
-      const rand = _.sample(r.data);
-      console.debug(rand);
-      const rObj = {
-        itemId:uuidv4(),
+    console.debug(r.data)
+    this.list = _.map(r.data, (rand)=>{ return {
+       
+        itemId: rand.item_id,
         price: rand.Price,
         img: rand["Image URL"],
         name: rand["Item Name"],
         title: rand["Item Name"],
         ounces: rand["Ounces"],
         quantity: rand["Quantity in Bundle"],
-        id: i,
-      };
-      that.list.push(rObj);
-    });
+      }})
+     
+
+    
   },
   methods: {
     itemAdd(itemId){
@@ -123,7 +124,7 @@ export default {
       this.shoppingCart.push(...rem)
       },
     itemRemove(itemId){
-       const rem = _.remove(this.shoppingCart, (i)=>{return i.itemId===itemId})
+      const rem = _.remove(this.shoppingCart, (i)=>{return i.itemId===itemId})
       this.list.push(...rem)
     }
   },

@@ -60,6 +60,11 @@ export default {
         return (this.lowerBound<=this.total) && (this.total<=this.upperBound);
     }
   },
+  created(){
+    
+    
+  },
+
   methods: {
     updateTotal(e) {
       

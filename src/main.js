@@ -11,7 +11,15 @@ import 'animate.css'
 
 Vue.config.productionTip = false
 
+import VueRouter from 'vue-router'
+const router = new VueRouter({ 
+  routes:[], 
+  mode:'history' 
+});
+
+Vue.use(VueRouter)
 new Vue({
   vuetify,
+  router,
   render: h => h(App)
 }).$mount('#app')
