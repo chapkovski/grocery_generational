@@ -22,9 +22,8 @@
       </v-card-text>
 
       <v-card-actions class="my-auto">
-        <v-chip
-          >Price: <b>${{ price }}</b></v-chip
-        >
+        <div class='price-chip'
+          >Price: <b>${{ price }}</b></div        >
       </v-card-actions>
     </v-card>
     
@@ -54,3 +53,20 @@ export default {
   },
 };
 </script>
+<style scoped>
+.price-chip{
+      text-transform: none;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 4px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    color: #f91155;
+}
+</style>

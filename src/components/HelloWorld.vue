@@ -18,9 +18,9 @@
             :key="element.name"
           >
             <single-item
-               v-bind='element'
-               actionImg='mdi-plus'
-               @itemClicked='itemAdd(element.itemId)'
+              v-bind="element"
+              actionImg="mdi-plus"
+              @itemClicked="itemAdd(element.itemId)"
             />
           </div>
 
@@ -49,9 +49,9 @@
             :key="element.name"
           >
             <single-item
-              v-bind='element'
-                actionImg='mdi-minus'
-                @itemClicked='itemRemove(element.itemId)'
+              v-bind="element"
+              actionImg="mdi-minus"
+              @itemClicked="itemRemove(element.itemId)"
             />
           </div>
           <div v-if="isShoppingCartEmpty" class="align-self-center">
@@ -66,7 +66,7 @@
 <script>
 import _ from "lodash";
 import axios from "axios";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import draggable from "vuedraggable";
 import SingleItem from "./SingleItem";
 let id = 1;
@@ -81,31 +81,35 @@ export default {
   data() {
     return {
       numItemsToChoose: 1,
-      list: [
-      
-      ],
+      list: [],
       shoppingCart: [],
     };
   },
   computed: {
     isShoppingCartEmpty() {
-      return this.shoppingCart.length ===0;
+      return this.shoppingCart.length === 0;
+    },
+    totAmount() {
+      
+      return _.sumBy(this.shoppingCart, "price");
     },
   },
   watch: {
-    shoppingCart(v) {
-      this.$emit("update-total", _.sumBy(v, "price"));
+    totAmount() {
+      this.$emit("update-total", this.totAmount);
     },
   },
   async mounted() {
-    
-    const qs =this.$route.query
+    const qs = this.$route.query;
 
-    const r = await axios.get("https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/random",{params:qs});
+    const r = await axios.get(
+      "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/random",
+      { params: qs }
+    );
     const toAdd = _.range(this.numItemsToChoose);
-    console.debug(r.data)
-    this.list = _.map(r.data, (rand)=>{ return {
-       
+
+    this.list = _.map(r.data, (rand) => {
+      return {
         itemId: rand.item_id,
         price: rand.Price,
         img: rand["Image URL"],
@@ -113,20 +117,32 @@ export default {
         title: rand["Item Name"],
         ounces: rand["Ounces"],
         quantity: rand["Quantity in Bundle"],
-      }})
-     
-
-    
+      };
+    });
   },
   methods: {
-    itemAdd(itemId){
-      const rem = _.remove(this.list, (i)=>{return i.itemId===itemId})
-      this.shoppingCart.push(...rem)
-      },
-    itemRemove(itemId){
-      const rem = _.remove(this.shoppingCart, (i)=>{return i.itemId===itemId})
-      this.list.push(...rem)
-    }
+    itemAdd(itemId) {
+      const objToFind = _.filter(this.list, (i) => {
+        return i.itemId === itemId;
+      });
+
+      _.remove(this.list, (i) => {
+        return i.itemId === itemId;
+      });
+
+      this.shoppingCart = [...this.shoppingCart, ...objToFind];
+    },
+    itemRemove(itemId) {
+      const objToFind = _.filter(this.shoppingCart, (i) => {
+        return i.itemId === itemId;
+      });
+
+      const newShopping = _.filter(this.shoppingCart, (i) => {
+        return i.itemId !== itemId;
+      });
+      this.shoppingCart = newShopping;
+      this.list = [...this.list, ...objToFind];
+    },
   },
 };
 </script>
