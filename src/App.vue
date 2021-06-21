@@ -1,17 +1,13 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark height="100">
+    <v-app-bar app color="primary" dark height="150">
       <div class="d-flex flex-column">
         <div>
           From the groceries on the screen, pick and drag some to go in a
-          shopping cart for a family of three with a baby and a busy lifestyle
-          that add up to between ${{ lowerBound }} and ${{ upperBound }}.
-        </div>
-        <div>
-          Total price of selected items:
-          <v-chip color="red" text-color="white"
-            >${{ total.toFixed(2) }}</v-chip
-          >
+          shopping cart for:
+          <v-alert border="left" color="red lighten" class="my-3">
+            a family of three with a baby and a busy lifestyle.
+          </v-alert>
         </div>
       </div>
 
@@ -24,8 +20,16 @@
     <v-footer app>
       <v-row>
         <v-col class="d-flex flex-column justify-center">
-           Add items up to between ${{ lowerBound }} and ${{ upperBound }}. </v-col>
-
+          Add items up to between ${{ lowerBound }} and ${{ upperBound }}.
+        </v-col>
+        <v-col class="d-flex flex-column justify-center">
+          <div>
+            Total price of selected items:
+            <v-chip color="red" text-color="white"
+              >${{ total.toFixed(2) }}</v-chip
+            >
+          </div>
+        </v-col>
         <v-spacer></v-spacer>
 
         <v-col class="d-flex justify-content-right flex-grow-0">
