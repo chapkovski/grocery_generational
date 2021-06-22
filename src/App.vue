@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <form method='post' id='mturk_form' action='https://workersandbox.mturk.com/mturk/externalSubmit' ref='form'>
+    <form method='post' id='mturk_form' :action='action' ref='form'>
       <input type="hidden" name='assignmentId' :value='assignmentId'>
       <input type="hidden" name='testingValues' value='919'>
     </form>
