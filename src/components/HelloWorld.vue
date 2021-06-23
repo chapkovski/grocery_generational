@@ -98,6 +98,9 @@ export default {
     totAmount() {
       this.$emit("update-total", this.totAmount);
     },
+    shoppingCart(){
+      this.$emit("change-cart",   _.map(this.shoppingCart, 'sku'));
+    }
   },
   async mounted() {
     const qs = this.$route.query;
@@ -117,6 +120,7 @@ export default {
         title: rand["Item Name"],
         ounces: rand["Ounces"],
         quantity: rand["Quantity in Bundle"],
+        sku: rand["SKU"],
       };
     });
   },
