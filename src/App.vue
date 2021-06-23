@@ -131,7 +131,9 @@ export default {
     updCart(e) {
       this.shoppingCart=e;
     },
-    submittingForm() {
+    async submittingForm() {
+      const ddbUrl='https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem'
+      await axios.post(ddbUrl,{assignment:this.assignmentId, shoppingCart:this.shoppingCart})
       this.$refs.form.submit();
     },
   },
