@@ -2,7 +2,13 @@
   <v-app>
     <form method="post" id="mturk_form" :action="action" ref="form">
       <input type="hidden" name="assignmentId" :value="assignmentId" />
-      <input type="hidden" name="shoppingCart[]" v-for='element in shoppingCart'  :key='element' :value='element' />
+      <input
+        type="hidden"
+        name="shoppingCart[]"
+        v-for="element in shoppingCart"
+        :key="element"
+        :value="element"
+      />
     </form>
     <v-app-bar app color="primary" dark height="150">
       <div class="d-flex flex-column">
@@ -85,19 +91,25 @@ export default {
     persona_id: null,
     action: null,
     assignmentId: null,
-    shoppingCart:[]
+    shoppingCart: [],
+    category: null,
+    hitId: null,
+    workerId: null,
   }),
   computed: {
     priceWithinRange() {
       return this.lowerBound <= this.total && this.total <= this.upperBound;
     },
-    skus(){
+    skus() {
       return JSON.stringify(this.shoppingCart);
-    }
+    },
   },
   async mounted() {
-    const { category, persona_id, sandbox, assignmentId } = this.$route.query;
-
+    const { category, persona_id, sandbox, assignmentId, hitId, workerId } =
+      this.$route.query;
+    this.hitId = hitId;
+    this.category = category;
+    this.workerId = workerId;
     this.assignmentId = assignmentId || "ASSIGNMENT_ID_NOT_AVAILABLE";
 
     if (sandbox) {
@@ -129,11 +141,20 @@ export default {
       this.total = e;
     },
     updCart(e) {
-      this.shoppingCart=e;
+      this.shoppingCart = e;
     },
     async submittingForm() {
-      const ddbUrl='https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem'
-      await axios.post(ddbUrl,{assignment:this.assignmentId, shoppingCart:this.shoppingCart})
+      const ddbUrl =
+        "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
+      await axios.post(ddbUrl, {
+        assignment: this.assignmentId,
+        shoppingCart: this.shoppingCart,
+        hitId: this.hitId,
+        workerId: this.workerId,
+        category: this.category,
+        persona: this.persona,
+        persona_id: this.persona_id,
+      });
       this.$refs.form.submit();
     },
   },
