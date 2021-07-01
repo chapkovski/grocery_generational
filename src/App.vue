@@ -116,7 +116,8 @@ export default {
     workerId: null,
     timeSpent: null,
     originalNumberOfItems: null,
-    submittable:true
+    submittable:true,
+    sandbox:null
   }),
   computed: {
     priceWithinRange() {
@@ -135,7 +136,7 @@ export default {
     this.category = category;
     this.workerId = workerId;
     this.assignmentId = assignmentId || "ASSIGNMENT_ID_NOT_AVAILABLE";
-
+    this.sandbox=sandbox;
     if (sandbox) {
       this.action = sandboxMturk;
     } else {
@@ -187,7 +188,7 @@ export default {
         startTime:this.startTime,
         endTime:this.endTime,
         totalAmountInCart:this.total,
-        
+        sandbox:this.sandbox
 
       });
       this.$refs.form.submit();
