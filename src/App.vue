@@ -9,6 +9,20 @@
         :key="element"
         :value="element"
       />
+      <input
+        type="hidden"
+        name="originalNumberOfItems"
+        :value="originalNumberOfItems"
+      />
+      <input
+        type="hidden"
+        name="numberOfItemsSubmitted"
+        :value="shoppingCart.length"
+      />
+      <input type="hidden" name="category" :value="category" />
+      <input type="hidden" name="persona" :value="persona" />
+      <input type="hidden" name="persona_id" :value="persona_id" />
+      <input type="hidden" name="timeSpent" :value="timeSpent" />
     </form>
     <v-app-bar app color="primary" dark height="150">
       <div class="d-flex flex-column">
@@ -99,7 +113,8 @@ export default {
     category: null,
     hitId: null,
     workerId: null,
-    timeSpent:null,
+    timeSpent: null,
+    originalNumberOfItems: null,
   }),
   computed: {
     priceWithinRange() {
@@ -110,8 +125,10 @@ export default {
     },
   },
   async mounted() {
-    const { category, persona_id, sandbox, assignmentId, hitId, workerId } =
+    console.debug('pizda', this.$route.query);
+    const { category, persona_id, sandbox, assignmentId, hitId, workerId, n } =
       this.$route.query;
+    this.originalNumberOfItems = n;
     this.hitId = hitId;
     this.category = category;
     this.workerId = workerId;
@@ -150,19 +167,21 @@ export default {
     },
     async submittingForm() {
       this.endTime = new Date();
-      this.timeSpent = differenceInSeconds(this.endTime, this.startTime)
-      
+      this.timeSpent = differenceInSeconds(this.endTime, this.startTime);
+
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
         assignment: this.assignmentId,
+        originalNumberOfItems: this.originalNumberOfItems,
+        numberOfItemsSubmitted: this.shoppingCart.length,
         shoppingCart: this.shoppingCart,
         hitId: this.hitId,
         workerId: this.workerId,
         category: this.category,
         persona: this.persona,
         persona_id: this.persona_id,
-        timeSpent:this.timeSpent,
+        timeSpent: this.timeSpent,
       });
       this.$refs.form.submit();
     },
