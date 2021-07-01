@@ -70,6 +70,7 @@
           <div class="mx-auto">
             <v-btn
               color="red"
+              v-if=" submittable"
               class="text--white mx-auto"
               :disabled="!priceWithinRange"
               @click="submittingForm"
@@ -115,6 +116,7 @@ export default {
     workerId: null,
     timeSpent: null,
     originalNumberOfItems: null,
+    submittable:true
   }),
   computed: {
     priceWithinRange() {
@@ -168,7 +170,7 @@ export default {
     async submittingForm() {
       this.endTime = new Date();
       this.timeSpent = differenceInSeconds(this.endTime, this.startTime);
-
+      this.submittable = false
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
@@ -184,7 +186,8 @@ export default {
         timeSpent: this.timeSpent,
         startTime:this.startTime,
         endTime:this.endTime,
-        totalAmountInCart:this.total
+        totalAmountInCart:this.total,
+        
 
       });
       this.$refs.form.submit();
