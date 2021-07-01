@@ -125,7 +125,7 @@ export default {
     },
   },
   async mounted() {
-    console.debug('pizda', this.$route.query);
+    
     const { category, persona_id, sandbox, assignmentId, hitId, workerId, n } =
       this.$route.query;
     this.originalNumberOfItems = n;
@@ -182,6 +182,10 @@ export default {
         persona: this.persona,
         persona_id: this.persona_id,
         timeSpent: this.timeSpent,
+        startTime:this.startTime,
+        endTime:this.endTime,
+        totalAmountInCart:this.total
+
       });
       this.$refs.form.submit();
     },
