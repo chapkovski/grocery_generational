@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { differenceInSeconds } from "date-fns";
+
 import HelloWorld from "./components/HelloWorld";
 import _ from "lodash";
 import axios from "axios";
@@ -83,6 +85,8 @@ export default {
   },
 
   data: () => ({
+    startTime: new Date(),
+    endTime: null,
     total: 0,
     lowerBound: 10,
     upperBound: 20,
@@ -95,6 +99,7 @@ export default {
     category: null,
     hitId: null,
     workerId: null,
+    timeSpent:null,
   }),
   computed: {
     priceWithinRange() {
@@ -144,6 +149,9 @@ export default {
       this.shoppingCart = e;
     },
     async submittingForm() {
+      this.endTime = new Date();
+      this.timeSpent = differenceInSeconds(this.endTime, this.startTime)
+      
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
@@ -154,6 +162,7 @@ export default {
         category: this.category,
         persona: this.persona,
         persona_id: this.persona_id,
+        timeSpent:this.timeSpent,
       });
       this.$refs.form.submit();
     },

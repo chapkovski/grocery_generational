@@ -69,6 +69,9 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import draggable from "vuedraggable";
 import SingleItem from "./SingleItem";
+
+// How many seconds are between
+
 let id = 1;
 export default {
   name: "two-list-headerslots",
@@ -90,7 +93,6 @@ export default {
       return this.shoppingCart.length === 0;
     },
     totAmount() {
-      
       return _.sumBy(this.shoppingCart, "price");
     },
   },
@@ -98,9 +100,9 @@ export default {
     totAmount() {
       this.$emit("update-total", this.totAmount);
     },
-    shoppingCart(){
-      this.$emit("change-cart",   _.map(this.shoppingCart, 'sku'));
-    }
+    shoppingCart() {
+      this.$emit("change-cart", _.map(this.shoppingCart, "sku"));
+    },
   },
   async mounted() {
     const qs = this.$route.query;
@@ -109,6 +111,7 @@ export default {
       "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/random",
       { params: qs }
     );
+
     const toAdd = _.range(this.numItemsToChoose);
 
     this.list = _.map(r.data, (rand) => {

@@ -35,7 +35,7 @@ export default {
     "itemId",
     "price",
     "title",
-    "description",
+    
     "short_title",
     "img",
     "ounces",
