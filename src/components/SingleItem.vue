@@ -47,6 +47,7 @@ export default {
     return {};
   },
   methods: {
+    
     badgeClick(v) {
       this.$emit("itemClicked");
     },

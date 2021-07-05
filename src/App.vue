@@ -12,7 +12,7 @@
       <input
         type="hidden"
         name="originalNumberOfItems"
-        :value="originalNumberOfItems"
+        :value="n"
       />
       <input
         type="hidden"
@@ -25,8 +25,8 @@
       <input type="hidden" name="timeSpent" :value="timeSpent" />
     </form>
     <v-app-bar app color="primary" dark height="150">
-      <div class="d-flex flex-column">
-        <div>
+      <v-row>
+        <v-col cols=8>
           From the groceries on the screen, pick and drag some to go in a
           shopping cart for:
           <transition
@@ -42,14 +42,15 @@
               {{ persona.description }}
             </v-alert>
           </transition>
-        </div>
-      </div>
+        </v-col>
+        <v-col>Category: <b>{{ category.category }}</b></v-col>
+      </v-row>
 
       <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-main>
-      <HelloWorld @update-total="updateTotal" @change-cart="updCart" />
+      <HelloWorld />
     </v-main>
     <v-footer app>
       <v-row>
@@ -102,7 +103,7 @@ export default {
   data: () => ({
     startTime: new Date(),
     endTime: null,
-    total: 0,
+    
 
     action: null,
     assignmentId: null,
@@ -115,9 +116,8 @@ export default {
   }),
   computed: {
     ...mapState(["category", "persona", "persona_loaded", "n"]),
-    priceWithinRange() {
-      return this.lowerBound <= this.total && this.total <= this.upperBound;
-    },
+    ...mapGetters({total:'totalAmount', priceWithinRange:'priceWithinRange'}),
+    
     skus() {
       return JSON.stringify(this.shoppingCart);
     },
@@ -146,12 +146,6 @@ export default {
   methods: {
     ...mapActions(["setParams", "getData"]),
     ...mapMutations({ setUrlParams: "SET_URL_PARAMS" }),
-    updateTotal(e) {
-      this.total = e;
-    },
-    updCart(e) {
-      this.shoppingCart = e;
-    },
     async submittingForm() {
       this.endTime = new Date();
       this.timeSpent = differenceInSeconds(this.endTime, this.startTime);

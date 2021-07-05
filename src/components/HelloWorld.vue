@@ -6,7 +6,7 @@
 
         <draggable
           id="first"
-          v-model="list"
+          v-model="choice_set"
           class="d-flex flex-wrap border"
           draggable=".item"
           group="a"
@@ -17,11 +17,7 @@
             v-for="element in choice_set"
             :key="element.name"
           >
-            <single-item
-              v-bind="element"
-              actionImg="mdi-plus"
-              @itemClicked="itemAdd(element.itemId)"
-            />
+            <single-item v-bind="element" actionImg="mdi-plus" @itemClicked='addToShoppingCart(element.itemId)'/>
           </div>
 
           <div
@@ -48,11 +44,7 @@
             v-for="element in shoppingCart"
             :key="element.name"
           >
-            <single-item
-              v-bind="element"
-              actionImg="mdi-minus"
-              @itemClicked="itemRemove(element.itemId)"
-            />
+            <single-item v-bind="element" actionImg="mdi-minus" @itemClicked='removeFromShoppingCart(element.itemId)' />
           </div>
           <div v-if="isShoppingCartEmpty" class="align-self-center">
             Shopping cart is empty
@@ -83,12 +75,25 @@ export default {
   data() {
     return {
       numItemsToChoose: 1,
-
-      shoppingCart: [],
     };
   },
   computed: {
-    ...mapState(['choice_set']),
+    choice_set: {
+      get() {
+        return this.$store.state.choice_set;
+      },
+      set(value) {
+        this.$store.commit("SET_CHOICE_SET", value);
+      },
+    },
+    shoppingCart: {
+      get() {
+        return this.$store.state.shoppingCart;
+      },
+      set(value) {
+        this.$store.commit("SET_SHOPPING_CART", value);
+      },
+    },
     isShoppingCartEmpty() {
       return this.shoppingCart.length === 0;
     },
@@ -96,39 +101,10 @@ export default {
       return _.sumBy(this.shoppingCart, "price");
     },
   },
-  watch: {
-    totAmount() {
-      this.$emit("update-total", this.totAmount);
-    },
-    shoppingCart() {
-      this.$emit("change-cart", _.map(this.shoppingCart, "sku"));
-    },
-  },
+  watch: {},
   async mounted() {},
   methods: {
-    
-    itemAdd(itemId) {
-      const objToFind = _.filter(this.list, (i) => {
-        return i.itemId === itemId;
-      });
-
-      _.remove(this.list, (i) => {
-        return i.itemId === itemId;
-      });
-
-      this.shoppingCart = [...this.shoppingCart, ...objToFind];
-    },
-    itemRemove(itemId) {
-      const objToFind = _.filter(this.shoppingCart, (i) => {
-        return i.itemId === itemId;
-      });
-
-      const newShopping = _.filter(this.shoppingCart, (i) => {
-        return i.itemId !== itemId;
-      });
-      this.shoppingCart = newShopping;
-      this.list = [...this.list, ...objToFind];
-    },
+    ...mapMutations({ addToShoppingCart: "ADD_TO_SHOPPING_CART" , removeFromShoppingCart:'REMOVE_FROM_SHOPPING_CART'}),
   },
 };
 </script>
