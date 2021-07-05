@@ -15,7 +15,7 @@
             outlined
             class="item"
             v-for="element in choice_set"
-            :key="element.name"
+            :key="element.itemId"
           >
             <single-item v-bind="element" actionImg="mdi-plus" @itemClicked='addToShoppingCart(element.itemId)'/>
           </div>
@@ -42,7 +42,7 @@
             outlined
             class="item pa-1"
             v-for="element in shoppingCart"
-            :key="element.name"
+            :key="element.itemId"
           >
             <single-item v-bind="element" actionImg="mdi-minus" @itemClicked='removeFromShoppingCart(element.itemId)' />
           </div>

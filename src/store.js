@@ -13,7 +13,7 @@ const store = new Vuex.Store({
         shoppingCart: [],
         urlParams: {},
         independent: false,
-
+        uploading:false,
         category: {},
         persona: {},
         n: null,
@@ -24,6 +24,7 @@ const store = new Vuex.Store({
         priceWithinRange: (state, getters) => (state.category.lb <= getters.totalAmount && getters.totalAmount <= state.category.ub),
     },
     mutations: {
+        SET_UPLOADING:(state,val)=>{state.uploading=val},
         ADD_TO_SHOPPING_CART: (state, itemId) => {
             const obj = _.find(state.choice_set, (i) => i.itemId === itemId)
             state.choice_set = _.reject(state.choice_set, (i) => i.itemId === itemId)
@@ -43,15 +44,17 @@ const store = new Vuex.Store({
             state.persona_loaded = true;
         },
         SET_URL_PARAMS: (state, params) => {
+            state.independent = (!(params.persona && params.category));
 
-            ({ independent: state.independent, } = params);
-            state.urlParams = params
+            state.urlParams = params;
+
         },
 
 
     },
     actions: {
         async setParams({ commit, state }) {
+            commit('SET_UPLOADING', true)
             const { category: urlCategory, persona_id: urlPersonaId } = state.urlParams
             let chosenCategory, chosenPersona;
             const personas = (await axios.get(personaUrl)).data;
@@ -101,6 +104,7 @@ const store = new Vuex.Store({
                     sku: i["SKU"],
                 };
             }));
+            commit('SET_UPLOADING', false)
         }
     }
 })

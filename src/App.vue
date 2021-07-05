@@ -1,19 +1,16 @@
 <template>
   <v-app>
+    <Loading></Loading>
     <form method="post" id="mturk_form" :action="action" ref="form">
       <input type="hidden" name="assignmentId" :value="assignmentId" />
       <input
         type="hidden"
         name="shoppingCart[]"
         v-for="element in shoppingCart"
-        :key="element"
+        :key="element.itemId"
         :value="element"
       />
-      <input
-        type="hidden"
-        name="originalNumberOfItems"
-        :value="n"
-      />
+      <input type="hidden" name="originalNumberOfItems" :value="n" />
       <input
         type="hidden"
         name="numberOfItemsSubmitted"
@@ -26,7 +23,7 @@
     </form>
     <v-app-bar app color="primary" dark height="150">
       <v-row>
-        <v-col cols=8>
+        <v-col cols="8">
           From the groceries on the screen, pick and drag some to go in a
           shopping cart for:
           <transition
@@ -43,7 +40,9 @@
             </v-alert>
           </transition>
         </v-col>
-        <v-col>Category: <b>{{ category.category }}</b></v-col>
+        <v-col
+          >Category: <b>{{ category.category }}</b></v-col
+        >
       </v-row>
 
       <v-spacer></v-spacer>
@@ -76,6 +75,11 @@
               :disabled="!priceWithinRange"
               @click="submittingForm"
             >
+              <v-progress-circular
+                v-if="uploading"
+                indeterminate
+                color="purple"
+              ></v-progress-circular>
               SUBMIT
             </v-btn>
           </div>
@@ -89,6 +93,7 @@
 import { differenceInSeconds } from "date-fns";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import HelloWorld from "./components/HelloWorld";
+import Loading from "@/components/Loading.vue";
 import _ from "lodash";
 import axios from "axios";
 const liveMturk = "https://www.mturk.com/mturk/externalSubmit";
@@ -98,16 +103,16 @@ export default {
 
   components: {
     HelloWorld,
+    Loading,
   },
 
   data: () => ({
     startTime: new Date(),
     endTime: null,
-    
 
     action: null,
     assignmentId: null,
-    shoppingCart: [],
+    uploading: false,
     hitId: null,
     workerId: null,
     timeSpent: null,
@@ -115,9 +120,19 @@ export default {
     sandbox: null,
   }),
   computed: {
-    ...mapState(["category", "persona", "persona_loaded", "n"]),
-    ...mapGetters({total:'totalAmount', priceWithinRange:'priceWithinRange'}),
-    
+    ...mapState([
+      "category",
+      "persona",
+      "persona_loaded",
+      "n",
+      "independent",
+      "shoppingCart",
+    ]),
+    ...mapGetters({
+      total: "totalAmount",
+      priceWithinRange: "priceWithinRange",
+    }),
+
     skus() {
       return JSON.stringify(this.shoppingCart);
     },
@@ -145,30 +160,40 @@ export default {
 
   methods: {
     ...mapActions(["setParams", "getData"]),
-    ...mapMutations({ setUrlParams: "SET_URL_PARAMS" }),
+    ...mapMutations({
+      setUrlParams: "SET_URL_PARAMS",
+      setUploading: "SET_UPLOADING",
+    }),
     async submittingForm() {
       this.endTime = new Date();
       this.timeSpent = differenceInSeconds(this.endTime, this.startTime);
       this.submittable = false;
+      this.setUploading(true);
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
         assignment: this.assignmentId,
-        originalNumberOfItems: this.originalNumberOfItems,
+        originalNumberOfItems: this.n,
         numberOfItemsSubmitted: this.shoppingCart.length,
-        shoppingCart: this.shoppingCart,
+        shoppingCart: _.map(this.shoppingCart, (i) => i.sku),
         hitId: this.hitId,
         workerId: this.workerId,
-        category: this.category,
-        persona: this.persona,
-        persona_id: this.persona_id,
+        category: this.category.category,
+        persona: this.persona.description,
+        persona_id: this.persona.persona_id,
         timeSpent: this.timeSpent,
         startTime: this.startTime,
         endTime: this.endTime,
         totalAmountInCart: this.total,
         sandbox: this.sandbox,
+        independent: this.independent,
       });
-      this.$refs.form.submit();
+      this.setUploading(false);
+      if (this.independent) {
+        location.reload(false);
+      } else {
+        this.$refs.form.submit();
+      }
     },
   },
 };
