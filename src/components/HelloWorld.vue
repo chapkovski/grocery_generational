@@ -14,7 +14,7 @@
           <div
             outlined
             class="item"
-            v-for="element in list"
+            v-for="element in choice_set"
             :key="element.name"
           >
             <single-item
@@ -69,8 +69,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import draggable from "vuedraggable";
 import SingleItem from "./SingleItem";
-
-// How many seconds are between
+import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 
 let id = 1;
 export default {
@@ -84,11 +83,12 @@ export default {
   data() {
     return {
       numItemsToChoose: 1,
-      list: [],
+
       shoppingCart: [],
     };
   },
   computed: {
+    ...mapState(['choice_set']),
     isShoppingCartEmpty() {
       return this.shoppingCart.length === 0;
     },
@@ -104,30 +104,9 @@ export default {
       this.$emit("change-cart", _.map(this.shoppingCart, "sku"));
     },
   },
-  async mounted() {
-    const qs = this.$route.query;
-
-    const r = await axios.get(
-      "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/random",
-      { params: qs }
-    );
-
-    const toAdd = _.range(this.numItemsToChoose);
-
-    this.list = _.map(r.data, (rand) => {
-      return {
-        itemId: rand.item_id,
-        price: rand.Price,
-        img: rand["Image URL"],
-        name: rand["Item Name"],
-        title: rand["Item Name"],
-        ounces: rand["Ounces"],
-        quantity: rand["Quantity in Bundle"],
-        sku: rand["SKU"],
-      };
-    });
-  },
+  async mounted() {},
   methods: {
+    
     itemAdd(itemId) {
       const objToFind = _.filter(this.list, (i) => {
         return i.itemId === itemId;

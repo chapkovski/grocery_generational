@@ -19,9 +19,9 @@
         name="numberOfItemsSubmitted"
         :value="shoppingCart.length"
       />
-      <input type="hidden" name="category" :value="category" />
-      <input type="hidden" name="persona" :value="persona" />
-      <input type="hidden" name="persona_id" :value="persona_id" />
+      <input type="hidden" name="category" :value="category.category" />
+      <input type="hidden" name="persona" :value="persona.description" />
+      <input type="hidden" name="persona_id" :value="persona.persona_id" />
       <input type="hidden" name="timeSpent" :value="timeSpent" />
     </form>
     <v-app-bar app color="primary" dark height="150">
@@ -39,7 +39,7 @@
               class="my-3"
               v-if="persona_loaded"
             >
-              {{ persona }}
+              {{ persona.description }}
             </v-alert>
           </transition>
         </div>
@@ -54,7 +54,7 @@
     <v-footer app>
       <v-row>
         <v-col class="d-flex flex-column justify-center">
-          Add items up to between ${{ lowerBound }} and ${{ upperBound }}.
+          Add items up to between ${{ category.lb }} and ${{ category.ub }}.
         </v-col>
         <v-col class="d-flex flex-column justify-center">
           <div>
@@ -70,7 +70,7 @@
           <div class="mx-auto">
             <v-btn
               color="red"
-              v-if=" submittable"
+              v-if="submittable"
               class="text--white mx-auto"
               :disabled="!priceWithinRange"
               @click="submittingForm"
@@ -86,7 +86,7 @@
 
 <script>
 import { differenceInSeconds } from "date-fns";
-
+import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import HelloWorld from "./components/HelloWorld";
 import _ from "lodash";
 import axios from "axios";
@@ -103,23 +103,18 @@ export default {
     startTime: new Date(),
     endTime: null,
     total: 0,
-    lowerBound: 10,
-    upperBound: 20,
-    persona: null,
-    persona_loaded: false,
-    persona_id: null,
+
     action: null,
     assignmentId: null,
     shoppingCart: [],
-    category: null,
     hitId: null,
     workerId: null,
     timeSpent: null,
-    originalNumberOfItems: null,
-    submittable:true,
-    sandbox:null
+    submittable: true,
+    sandbox: null,
   }),
   computed: {
+    ...mapState(["category", "persona", "persona_loaded", "n"]),
     priceWithinRange() {
       return this.lowerBound <= this.total && this.total <= this.upperBound;
     },
@@ -127,41 +122,30 @@ export default {
       return JSON.stringify(this.shoppingCart);
     },
   },
+  async created() {
+    this.setUrlParams(this.$route.query);
+    await this.setParams();
+    await this.getData();
+  },
   async mounted() {
-    
     const { category, persona_id, sandbox, assignmentId, hitId, workerId, n } =
       this.$route.query;
-    this.originalNumberOfItems = n;
+
     this.hitId = hitId;
-    this.category = category;
+
     this.workerId = workerId;
     this.assignmentId = assignmentId || "ASSIGNMENT_ID_NOT_AVAILABLE";
-    this.sandbox=sandbox;
+    this.sandbox = sandbox;
     if (sandbox) {
       this.action = sandboxMturk;
     } else {
       this.action = liveMturk;
     }
-    const personaUrl =
-      "https://blocke-channels-bucket.s3.amazonaws.com/persona.json";
-    const limitsUrl =
-      "https://blocke-channels-bucket.s3.amazonaws.com/cats.json";
-
-    this.persona_id = parseInt(persona_id);
-    const r = await axios.get(limitsUrl);
-
-    ({ lb: this.lowerBound, ub: this.upperBound } = _.find(r.data, {
-      category: category,
-    }));
-    const personaData = await axios.get(personaUrl);
-
-    this.persona = _.find(personaData.data, {
-      persona_id: this.persona_id,
-    }).description;
-    this.persona_loaded = true;
   },
 
   methods: {
+    ...mapActions(["setParams", "getData"]),
+    ...mapMutations({ setUrlParams: "SET_URL_PARAMS" }),
     updateTotal(e) {
       this.total = e;
     },
@@ -171,7 +155,7 @@ export default {
     async submittingForm() {
       this.endTime = new Date();
       this.timeSpent = differenceInSeconds(this.endTime, this.startTime);
-      this.submittable = false
+      this.submittable = false;
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
@@ -185,11 +169,10 @@ export default {
         persona: this.persona,
         persona_id: this.persona_id,
         timeSpent: this.timeSpent,
-        startTime:this.startTime,
-        endTime:this.endTime,
-        totalAmountInCart:this.total,
-        sandbox:this.sandbox
-
+        startTime: this.startTime,
+        endTime: this.endTime,
+        totalAmountInCart: this.total,
+        sandbox: this.sandbox,
       });
       this.$refs.form.submit();
     },

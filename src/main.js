@@ -8,7 +8,7 @@ import './assets/demos.css'
 import './assets/form.css'
 import vuetify from './plugins/vuetify'
 import 'animate.css'
-
+import store from './store'
 Vue.config.productionTip = false
 
 import VueRouter from 'vue-router'
@@ -19,6 +19,7 @@ const router = new VueRouter({
 
 Vue.use(VueRouter)
 new Vue({
+  store,
   vuetify,
   router,
   render: h => h(App)
