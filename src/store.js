@@ -95,7 +95,7 @@ const store = new Vuex.Store({
             commit('SET_CHOICE_SET', _.map(r.data, (i) => {
                 return {
                     itemId: i.item_id,
-                    price: i.Price,
+                    price: i["Price in Bundle"],
                     img: i["Image URL"],
                     name: i["Item Name"],
                     title: i["Item Name"],
