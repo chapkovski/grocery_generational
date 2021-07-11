@@ -23,7 +23,7 @@
 
       <v-card-actions class="my-auto">
         <div class='price-chip'
-          >Price: <b>${{ price }}</b></div        >
+          >Price: <b>${{ price.toFixed(2) }}</b></div        >
       </v-card-actions>
     </v-card>
     
