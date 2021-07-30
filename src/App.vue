@@ -109,7 +109,6 @@ export default {
   data: () => ({
     startTime: new Date(),
     endTime: null,
-
     action: null,
     assignmentId: null,
     uploading: false,
@@ -126,6 +125,7 @@ export default {
       "persona_loaded",
       "n",
       "independent",
+      "generation",
       "shoppingCart",
     ]),
     ...mapGetters({
@@ -187,6 +187,7 @@ export default {
         totalAmountInCart: this.total,
         sandbox: this.sandbox,
         independent: this.independent,
+        generation:this.generation
       });
       this.setUploading(false);
       if (this.independent) {
