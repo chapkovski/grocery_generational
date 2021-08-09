@@ -12,7 +12,7 @@
         name="shoppingCart[]"
         v-for="element in shoppingCart"
         :key="element.itemId"
-        :value="element"
+        :value="element.sku"
       />
       <input type="hidden" name="originalNumberOfItems" :value="n" />
       <input
