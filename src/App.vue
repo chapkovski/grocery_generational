@@ -1,5 +1,9 @@
 <template>
-  <v-app>
+  <v-app >
+    <v-overlay
+          :absolute="true"
+          :value="no_assignment"
+        ></v-overlay>
     <Loading></Loading>
     <form method="post" id="mturk_form" :action="action" ref="form">
       <input type="hidden" name="assignmentId" :value="assignmentId" />
@@ -107,6 +111,7 @@ export default {
   },
 
   data: () => ({
+    no_assignment:true,
     startTime: new Date(),
     endTime: null,
     action: null,
@@ -147,9 +152,10 @@ export default {
       this.$route.query;
 
     this.hitId = hitId;
-
+    this.no_assignment = assignmentId === "ASSIGNMENT_ID_NOT_AVAILABLE"
+    
     this.workerId = workerId;
-    this.assignmentId = assignmentId || "ASSIGNMENT_ID_NOT_AVAILABLE";
+    this.assignmentId = assignmentId ;
     this.sandbox = sandbox;
      if (parseInt(this.sandbox) === 1) {
       this.action = sandboxMturk;
