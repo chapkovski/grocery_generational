@@ -151,7 +151,7 @@ export default {
     this.workerId = workerId;
     this.assignmentId = assignmentId || "ASSIGNMENT_ID_NOT_AVAILABLE";
     this.sandbox = sandbox;
-    if (sandbox) {
+     if (parseInt(this.sandbox) === 1) {
       this.action = sandboxMturk;
     } else {
       this.action = liveMturk;
@@ -172,6 +172,7 @@ export default {
       const ddbUrl =
         "https://6we1uwj492.execute-api.us-east-1.amazonaws.com/Prod/newitem";
       await axios.post(ddbUrl, {
+        ...this.$route.query,
         assignment: this.assignmentId,
         originalNumberOfItems: this.n,
         numberOfItemsSubmitted: this.shoppingCart.length,
@@ -187,7 +188,8 @@ export default {
         totalAmountInCart: this.total,
         sandbox: this.sandbox,
         independent: this.independent,
-        generation:this.generation
+        generation:parseInt(this.generation),
+        
       });
       this.setUploading(false);
       if (this.independent) {
